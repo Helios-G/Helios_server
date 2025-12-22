@@ -1,5 +1,6 @@
 package com.example.helios.modelmgmt.domain;
 
+import com.example.helios.admin.domain.Admin;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,10 @@ public class ModelVersion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer modelVersionId;
 
-    // 나중에 Admin 엔티티와 연관
-    private Integer adminId;
+    // === FK : 관리자가 버전 관리 ===
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id", nullable = false)
+    private Admin admin;
 
     @Column(length = 45, nullable = false)
     private String version;

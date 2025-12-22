@@ -1,9 +1,15 @@
 package com.example.helios.learning.domain;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import com.example.helios.participation.domain.HospitalSession;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Table(name = "session")
@@ -16,6 +22,10 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "session_id")
     private Integer sessionId;
+
+    // 세션에 어떤 병원들이 참여했는지 조회용
+    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
+    private List<HospitalSession> hospitalSessions = new ArrayList<>();
 
     @Column(name = "title", length = 45)
     private String title;
