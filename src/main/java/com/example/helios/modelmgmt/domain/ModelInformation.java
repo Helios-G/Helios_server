@@ -1,5 +1,7 @@
 package com.example.helios.modelmgmt.domain;
 
+import com.example.helios.member.domain.Hospital;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,15 +16,23 @@ public class ModelInformation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer modelInformationId;
 
-    // 나중에 Hospital 엔티티와 연관
-    private Integer hospitalId;
 
-    // 나중에 ModelVersion 엔티티와 연관
-    private Integer modelVersionId;
+    // === FK ===
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", nullable = false)
+    private Hospital hospital;
 
-    // 나중에 WorkCode 엔티티와 연관
-    private Integer workCodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "model_version_id", nullable = false)
+    private ModelVersion modelVersion;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_code_id", nullable = false)
+    private WorkCode workCode;
+
+    // == 기타 컬럼 ==
+    @Column(length = 45)
     private Integer participation;
 
     @Column(length = 45)
@@ -36,7 +46,4 @@ public class ModelInformation {
 
     @Column(length = 45)
     private String loss;
-
-    @Column(length = 2)
-    private Integer workCode;
 }
