@@ -1,14 +1,23 @@
-package com.example.helios.learning.domain;
+package com.example.helios.session.domain;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
-import com.example.helios.participation.domain.HospitalSession;
+import com.example.helios.participation.domain.SessionParticipant;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
@@ -25,7 +34,7 @@ public class Session {
 
     // 세션에 어떤 병원들이 참여했는지 조회용
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
-    private List<HospitalSession> hospitalSessions = new ArrayList<>();
+    private List<SessionParticipant> hospitalSessions = new ArrayList<>();
 
     @Column(name = "title", length = 45)
     private String title;
@@ -36,8 +45,8 @@ public class Session {
     @Column(name = "participation", length = 45)
     private String participation;
 
-    @Column(name = "participant_count")
-    private Integer participantCount;
+    @Column(name = "max_participants")
+    private Integer maxParticipants;
 
     @Column(name = "data_format", length = 45)
     private String dataFormat;
@@ -54,8 +63,13 @@ public class Session {
     @Column(name = "created_by", length = 45)
     private String createdBy;
 
-    @Column(name = "created_at", length = 45)
-    private String createdAt;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }   
 
     @Column(name = "session_end_at", length = 45)
     private String sessionEndAt;
