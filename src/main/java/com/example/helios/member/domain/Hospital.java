@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.example.helios.participation.domain.HospitalSession;
+import com.example.helios.participation.domain.SessionParticipant;
 import com.example.helios.admin.domain.Admin;
 
 import jakarta.persistence.Column;
@@ -36,7 +36,7 @@ public class Hospital {
 
     //병원이 어떤 세션에 참여했는지 조회용
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
-    private List<HospitalSession> hospitalSessions = new ArrayList<>();
+    private List<SessionParticipant> hospitalSessions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_status_code_id")

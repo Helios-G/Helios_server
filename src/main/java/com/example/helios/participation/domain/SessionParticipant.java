@@ -1,18 +1,27 @@
 package com.example.helios.participation.domain;
 
+import java.time.LocalDateTime;
+
 import com.example.helios.member.domain.Hospital;
-import com.example.helios.learning.domain.Session;
-import jakarta.persistence.*;
+import com.example.helios.session.domain.Session;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "hospital_session")
 @Getter
 @NoArgsConstructor
-public class HospitalSession {
+public class SessionParticipant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +48,7 @@ public class HospitalSession {
     private LocalDateTime joinedAt;
 
     // 최소 생성자
-    public HospitalSession(Hospital hospital, Session session) {
+    public SessionParticipant(Hospital hospital, Session session) {
         this.hospital = hospital;
         this.session = session;
         this.status = 1; // 기본 참여중
