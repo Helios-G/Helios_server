@@ -1,4 +1,4 @@
-package com.example.helios.member.domain;
+package com.example.helios.member.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

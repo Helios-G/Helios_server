@@ -1,6 +1,6 @@
-package com.example.helios.modelmgmt.domain;
+package com.example.helios.modelmgmt.entity;
 
-import com.example.helios.admin.domain.Admin;
+import com.example.helios.admin.entity.Admin;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

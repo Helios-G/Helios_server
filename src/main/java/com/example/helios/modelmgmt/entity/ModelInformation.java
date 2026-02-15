@@ -1,6 +1,6 @@
-package com.example.helios.modelmgmt.domain;
+package com.example.helios.modelmgmt.entity;
 
-import com.example.helios.member.domain.Hospital;
+import com.example.helios.member.entity.Hospital;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +28,7 @@ public class ModelInformation {
     // === FK ===
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital hospitalId;
+    private Hospital hospital;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_version_id", nullable = false)

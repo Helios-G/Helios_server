@@ -1,17 +1,26 @@
 package com.example.helios.session.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
-import com.example.helios.session.domain.Session;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.helios.session.entity.Session;
+import com.example.helios.session.dto.LabelingStartRequest;
+import com.example.helios.session.dto.LabelingStartResponse;
 import com.example.helios.session.dto.SessionCreateRequest;
 import com.example.helios.session.dto.SessionCreateResponse;
 import com.example.helios.session.dto.SessionJoinRequest;
 import com.example.helios.session.dto.SessionJoinResponse;
 import com.example.helios.session.dto.SessionListResponse;
+import com.example.helios.session.service.LabelService;
 import com.example.helios.session.service.SessionService;
-
-import java.util.List; 
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class SessionController {
 
     private final SessionService sessionService;
+    private final LabelService labelService;
 
     // 세션 생성
     @PostMapping("/create")
@@ -53,16 +63,23 @@ public class SessionController {
         return ResponseEntity.ok(sessionService.getMySessions(hospitalId));
     }
 
-    /*
-    // 세션 참여
-    @PostMapping("/{sessionId}/join")
-    public ResponseEntity<SessionJoinResponse> joinSession(
+    // 라벨링 시작
+    @PostMapping("/{sessionId}/label/start")
+    public ResponseEntity<LabelingStartResponse> startLabeling(
             @PathVariable Integer sessionId,
-            @RequestBody SessionJoinRequest request) {
-
+            @RequestBody LabelingStartRequest request
+    ) {
         return ResponseEntity.ok(
-            sessionService.joinSession(sessionId, request)
+                labelService.startLabeling(sessionId, request)
         );
+    }    
+
+    // 세션 참여 대기 신청
+    @PostMapping("/{sessionId}/join") 
+    public ResponseEntity<SessionJoinResponse> joinSession(
+        @PathVariable(name = "sessionId") Long sessionId,
+        @RequestBody SessionJoinRequest request
+    ) {
+        return ResponseEntity.ok(sessionService.joinSession(sessionId, request));
     }
-    */
 }

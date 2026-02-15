@@ -16,7 +16,7 @@ public class AdminSessionController {
     private final AdminService adminService;
 
     @DeleteMapping("/{sessionId}")
-    public ResponseEntity<Void> deleteSession(@PathVariable Integer sessionId) {
+    public ResponseEntity<Void> deleteSession(@PathVariable Long sessionId) {
         adminService.deleteSession(sessionId);
         return ResponseEntity.noContent().build();
     }

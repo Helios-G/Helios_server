@@ -1,10 +1,8 @@
-package com.example.helios.session.domain;
+package com.example.helios.session.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.helios.participation.domain.SessionParticipant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +28,7 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "session_id")
-    private Integer sessionId;
+    private Long sessionId;
 
     // 세션에 어떤 병원들이 참여했는지 조회용
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
@@ -72,5 +70,5 @@ public class Session {
     }   
 
     @Column(name = "session_end_at", length = 45)
-    private String sessionEndAt;
+    private LocalDateTime sessionEndAt;
 }

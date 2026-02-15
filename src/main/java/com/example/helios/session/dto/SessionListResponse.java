@@ -1,6 +1,6 @@
 package com.example.helios.session.dto;
 
-import com.example.helios.session.domain.Session;
+import com.example.helios.session.entity.Session;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SessionListResponse {
 
-    private Integer sessionId;
+    private Long sessionId;
     private String title;
     private String status;
     private int currentParticipants;

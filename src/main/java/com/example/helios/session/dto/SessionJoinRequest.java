@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class SessionJoinRequest {
     private Long hospitalId;
+    private String labelingToken;
 }

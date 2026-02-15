@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.helios.session.domain.Session;
+import com.example.helios.session.entity.Session;
 
-public interface SessionRepository extends JpaRepository<Session, Integer> {
+public interface SessionRepository extends JpaRepository<Session, Long> {
 
     // 상태별 조회
     List<Session> findByStatus(Integer status);
