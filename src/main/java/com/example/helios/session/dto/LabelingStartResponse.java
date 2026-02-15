@@ -5,9 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SessionJoinResponse {
+public class LabelingStartResponse {
+    private String labelingSessionId;
     private Long sessionId;
-    private Integer currentParticipants;
-    private Integer maxParticipants;
-    private String status;
 }

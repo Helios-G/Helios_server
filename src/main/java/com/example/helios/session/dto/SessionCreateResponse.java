@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SessionCreateResponse {
 
-    private Integer sessionId;
+    private Long sessionId;
     private String status;
 }

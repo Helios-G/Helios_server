@@ -1,19 +1,8 @@
-package com.example.helios.participation.domain;
+package com.example.helios.session.entity;
 
 import java.time.LocalDateTime;
-
-import com.example.helios.member.domain.Hospital;
-import com.example.helios.session.domain.Session;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.example.helios.member.entity.Hospital;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,8 +27,7 @@ public class SessionParticipant {
     @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    // 참여 상태
-    // 1: 참여중, 0: 탈퇴, -1: 차단
+    // 참여 상태 (1: 참여중, 0: 탈퇴, -1: 차단)
     @Column(nullable = false)
     private Integer status;
 
@@ -47,11 +35,22 @@ public class SessionParticipant {
     @Column(name = "joined_at", nullable = false)
     private LocalDateTime joinedAt;
 
-    // 최소 생성자
+    // [수정된 생성자] 연관관계 편의 로직 추가
     public SessionParticipant(Hospital hospital, Session session) {
         this.hospital = hospital;
         this.session = session;
         this.status = 1; // 기본 참여중
         this.joinedAt = LocalDateTime.now();
+
+        // === 연관관계 편의 로직 ===
+        // Hospital 객체의 참여 목록에 현재 참여 정보(this)를 추가
+        if (hospital != null) {
+            hospital.getHospitalSessions().add(this);
+        }
+
+        // Session 객체의 참여 목록에 현재 참여 정보(this)를 추가
+        if (session != null) {
+            session.getHospitalSessions().add(this);
+        }
     }
 }

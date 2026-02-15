@@ -1,12 +1,14 @@
 package com.example.helios.member.service;
 
-import com.example.helios.member.domain.Hospital;
-import com.example.helios.member.repository.HospitalRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.example.helios.member.entity.Hospital;
+import com.example.helios.member.repository.HospitalRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class HospitalService {
     }
 
     // ID로 조회
-    public Optional<Hospital> findById(Integer id) {
+    public Optional<Hospital> findById(Long id) {
         return hospitalRepository.findById(id);
     }
 
