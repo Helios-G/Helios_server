@@ -1,15 +1,16 @@
 package com.example.helios.learning.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.helios.session.repository.SessionParticipantRepository; 
-import com.example.helios.session.entity.Session;
 import com.example.helios.learning.dto.LearningStartRequest;
 import com.example.helios.learning.dto.LearningStartResponse;
+import com.example.helios.session.entity.Session;
+import com.example.helios.session.repository.SessionParticipantRepository;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class LearningService {
         LearningStartRequest flowerRequest = new LearningStartRequest(participants, rounds);
 
         // 3. Flower 서버로 전송
-        String flowerUrl = "http://flower-server-ip:8080/train/start";
+        String flowerUrl = "http://localhost:8080/train/start";
         
         try {
             restTemplate.postForEntity(flowerUrl, flowerRequest, LearningStartResponse.class);

@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.helios.learning.service.LearningService;
 import com.example.helios.member.entity.Hospital;
 import com.example.helios.member.repository.HospitalRepository;
-import com.example.helios.session.entity.SessionParticipant;
-import com.example.helios.session.repository.SessionParticipantRepository;
-import com.example.helios.session.entity.Session;
 import com.example.helios.session.dto.SessionCreateRequest;
 import com.example.helios.session.dto.SessionJoinRequest;
 import com.example.helios.session.dto.SessionJoinResponse;
 import com.example.helios.session.dto.SessionListResponse;
+import com.example.helios.session.entity.Session;
+import com.example.helios.session.entity.SessionParticipant;
+import com.example.helios.session.repository.SessionParticipantRepository;
 import com.example.helios.session.repository.SessionRepository;
 
 import lombok.RequiredArgsConstructor;
