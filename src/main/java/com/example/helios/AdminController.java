@@ -1,6 +1,9 @@
 package com.mysite.sbb;
 
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +23,11 @@ public class AdminController {
     }
 
     @GetMapping
-    public List<Admin> findAll() {
+    public List<Admin> findAll(HttpSession session) {
+        Long adminId = (Long) session.getAttribute("ADMIN_ID");
+        if (adminId == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin only");
+        }
         return repository.findAll();
     }
 
