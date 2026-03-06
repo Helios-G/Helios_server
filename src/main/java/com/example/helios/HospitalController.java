@@ -206,6 +206,19 @@ public class HospitalController {
         return "PASSWORD CHANGED";
     }
 
+    @DeleteMapping("/me")
+public String deleteMe(HttpSession session) {
+    Long hospitalId = requireHospital(session);
+
+    Hospital hospital = hospitalRepository.findById(hospitalId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hospital not found: " + hospitalId));
+
+    hospitalRepository.delete(hospital);
+    session.invalidate();
+
+    return "ACCOUNT DELETED";
+}
+
     // =========================
     // Public (필요하면 제한 가능)
     // =========================
@@ -221,4 +234,5 @@ public class HospitalController {
     public String ping() {
         return "HOSPITAL OK";
     }
+
 }
