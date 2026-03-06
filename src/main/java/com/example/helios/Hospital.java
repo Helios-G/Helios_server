@@ -45,12 +45,12 @@ public class Hospital {
     private String date;
 
     @Column(nullable = false)
-    private String status;
+    private int status;
 
     protected Hospital() {}
 
     public Hospital(String name, String businessNum, String email,
-                    String password, String date, String status) {
+                    String password, String date, int status) {
         this.name = name;
         this.businessNum = businessNum;
         this.email = email;
@@ -77,8 +77,8 @@ public class Hospital {
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public int getStatus() { return status; }
+    public void setStatus(int status) { this.status = status; }
 
     public void setAdmin(Admin admin) { this.admin = admin; }
     public void setSession(SessionEntity session) { this.session = session; }

@@ -79,7 +79,7 @@ public class HospitalController {
         String password = (String) request.get("password");
         String encodedPassword = passwordEncoder.encode(password);
         String date = (String) request.get("date");
-        String status = (String) request.get("status");
+        int status = 1;
 
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Admin not found: " + adminId));
@@ -124,7 +124,7 @@ public class HospitalController {
             hospital.setPassword(passwordEncoder.encode(raw));
         }
         if (request.containsKey("date")) hospital.setDate((String) request.get("date"));
-        if (request.containsKey("status")) hospital.setStatus((String) request.get("status"));
+        if (request.containsKey("status")) hospital.setStatus((int) request.get("status"));
 
         return hospitalRepository.save(hospital);
     }
@@ -176,7 +176,6 @@ public class HospitalController {
             String raw = (String) request.get("password");
             hospital.setPassword(passwordEncoder.encode(raw));
         if (request.containsKey("date")) hospital.setDate((String) request.get("date"));
-        if (request.containsKey("status")) hospital.setStatus((String) request.get("status"));
         }
 
         return hospitalRepository.save(hospital);
@@ -205,19 +204,20 @@ public class HospitalController {
 
         return "PASSWORD CHANGED";
     }
-
+    
+    //탈퇴
     @DeleteMapping("/me")
-public String deleteMe(HttpSession session) {
-    Long hospitalId = requireHospital(session);
+    public String deleteMe(HttpSession session) {
+        Long hospitalId = requireHospital(session);
 
-    Hospital hospital = hospitalRepository.findById(hospitalId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hospital not found: " + hospitalId));
+        Hospital hospital = hospitalRepository.findById(hospitalId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hospital not found: " + hospitalId));
 
-    hospitalRepository.delete(hospital);
-    session.invalidate();
+        hospitalRepository.delete(hospital);
+        session.invalidate();
 
-    return "ACCOUNT DELETED";
-}
+        return "ACCOUNT DELETED";
+    }
 
     // =========================
     // Public (필요하면 제한 가능)
@@ -234,5 +234,4 @@ public String deleteMe(HttpSession session) {
     public String ping() {
         return "HOSPITAL OK";
     }
-
 }

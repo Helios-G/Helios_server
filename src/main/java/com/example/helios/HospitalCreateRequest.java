@@ -17,7 +17,7 @@ public class HospitalCreateRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")   // "2025-01-01" 이런 형식 파싱
     private String date;
 
-    private String status;
+    private int status;
 
     // ★ 반드시 기본 생성자 필요
     public HospitalCreateRequest() {
@@ -48,6 +48,6 @@ public class HospitalCreateRequest {
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public int getStatus() { return status; }
+    public void setStatus(int status) { this.status = status; }
 }
