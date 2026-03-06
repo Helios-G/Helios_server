@@ -60,7 +60,7 @@ public class AuthController {
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()), // BCrypt 저장
                 "2025-01-01",
-                "ACTIVE"
+                1
         );
 
         hospital.setAdmin(admin);
