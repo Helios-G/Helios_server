@@ -1,57 +1,67 @@
 package com.example.helios.modelmgmt.entity;
 
-import com.example.helios.member.entity.Hospital;
+import com.example.helios.session.entity.Session; 
+import com.example.helios.user.entity.User;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+
+import com.example.helios.modelmgmt.entity.ModelVersion;
+import com.example.helios.modelmgmt.entity.WorkCode;
+
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "model_information")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ModelInformation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer modelInformationId;
+    @Column(name = "model_information_id")
+    private Long modelInformationId;
 
+    // === FK 연관 관계 ===
 
-    // === FK ===
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital hospital;
+    @JoinColumn(name = "session_id", nullable = false)
+    private Session session; 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_version_id", nullable = false)
     private ModelVersion modelVersion;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work_code_id", nullable = false)
     private WorkCode workCode;
 
-    // == 기타 컬럼 ==
-    @Column(length = 45)
+    // === 기타 컬럼 ===
+
     private Integer participation;
 
-    @Column(length = 45)
+    @Column(name = "model_architecture", length = 45)
     private String modelArchitecture;
 
-    @Column(length = 45)
-    private String round;
+    private Integer round; 
 
-    @Column(length = 45)
-    private String accuracy;
+    private Double accuracy; 
 
-    @Column(length = 45)
-    private String loss;
+    private Double loss; 
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
+

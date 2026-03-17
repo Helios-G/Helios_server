@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SessionJoinRequest {
-    private Long hospitalId;
+    private Long userId;
     private String labelingToken;
 }

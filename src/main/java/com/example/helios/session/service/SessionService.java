@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.helios.learning.service.LearningService;
-import com.example.helios.member.entity.Hospital;
-import com.example.helios.member.repository.HospitalRepository;
 import com.example.helios.session.dto.SessionCreateRequest;
 import com.example.helios.session.dto.SessionJoinRequest;
 import com.example.helios.session.dto.SessionJoinResponse;
@@ -17,6 +15,8 @@ import com.example.helios.session.entity.Session;
 import com.example.helios.session.entity.SessionParticipant;
 import com.example.helios.session.repository.SessionParticipantRepository;
 import com.example.helios.session.repository.SessionRepository;
+import com.example.helios.user.entity.User;
+import com.example.helios.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
-    private final HospitalRepository hospitalRepository;
+    private final UserRepository userRepository;
     private final SessionParticipantRepository participantRepository;
     private final LearningService learningService;
 
@@ -70,10 +70,10 @@ public class SessionService {
     }
 
     // 내가 참여 중인 세션 (병원 기준)
-    public List<SessionListResponse> getMySessions(Integer hospitalId) {
+    public List<SessionListResponse> getMySessions(Integer userId) {
         // 이 부분도 필요하다면 Long 타입 불일치 확인이 필요할 수 있습니다.
         List<Session> sessions =
-            sessionRepository.findMySessions(hospitalId);
+            sessionRepository.findMySessions(userId);
 
         return sessions.stream()
             .map(session -> {
@@ -96,14 +96,14 @@ public class SessionService {
             .orElseThrow(() -> new IllegalArgumentException("세션이 존재하지 않습니다."));
 
         // 2. 병원 존재 검증
-        Hospital hospital = hospitalRepository.findById(request.getHospitalId())
+        User user = userRepository.findById(request.getUserId())
             .orElseThrow(() -> new IllegalArgumentException("병원이 존재하지 않습니다."));
 
         // 3. 이미 참여했는지 검증
         boolean alreadyJoined =
-            participantRepository.existsBySession_SessionIdAndHospital_HospitalId(
+            participantRepository.existsBySession_SessionIdAndUser_UserId(
                 sessionId,
-                request.getHospitalId()
+                request.getUserId()
             );
 
         if (alreadyJoined) {
@@ -121,7 +121,7 @@ public class SessionService {
 
         // 6. 참여 정보 저장
         participantRepository.save(
-            new SessionParticipant(hospital, session)
+            new SessionParticipant(user, session)
         );
 
         int updatedCount = currentCount + 1;

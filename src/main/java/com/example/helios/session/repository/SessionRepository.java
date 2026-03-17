@@ -17,8 +17,8 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("""
         select distinct s
         from Session s
-        join s.hospitalSessions hs
-        where hs.hospital.hospitalId = :hospitalId
+        join s.userSessions us
+        where us.user.userId = :userId
     """)
-    List<Session> findMySessions(@Param("hospitalId") Integer hospitalId);
+    List<Session> findMySessions(@Param("userId") Integer userId);
 }

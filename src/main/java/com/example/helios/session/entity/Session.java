@@ -32,7 +32,7 @@ public class Session {
 
     // 세션에 어떤 병원들이 참여했는지 조회용
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
-    private List<SessionParticipant> hospitalSessions = new ArrayList<>();
+    private List<SessionParticipant> userSessions = new ArrayList<>();
 
     @Column(name = "title", length = 45)
     private String title;
@@ -40,8 +40,8 @@ public class Session {
     @Column(name = "description", length = 45)
     private String description;
 
-    @Column(name = "participation", length = 45)
-    private String participation;
+    @Column(name = "participant_count")
+    private Integer participantCount;
 
     @Column(name = "max_participants")
     private Integer maxParticipants;
@@ -49,7 +49,7 @@ public class Session {
     @Column(name = "data_format", length = 45)
     private String dataFormat;
 
-    @Column(name = "label_class_list", length = 45)
+    @Column(name = "label_class_list", length = 1000)
     private String labelClassList;
 
     @Column(name = "labelclass_count")
@@ -69,6 +69,6 @@ public class Session {
         this.createdAt = LocalDateTime.now();
     }   
 
-    @Column(name = "session_end_at", length = 45)
+    @Column(name = "session_end_at")
     private LocalDateTime sessionEndAt;
 }
