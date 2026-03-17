@@ -10,8 +10,8 @@ public interface SessionParticipantRepository
 
     int countBySession_SessionId(Long sessionId);
 
-    boolean existsBySession_SessionIdAndHospital_HospitalId(
-        Long sessionId, Long hospitalId
+    boolean existsBySession_SessionIdAndUser_UserId(
+        Long sessionId, Long userId
     );
 
     // ID로 참여자 전체 리스트 조회

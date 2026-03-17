@@ -24,7 +24,7 @@ public class LearningService {
         // 1. 참여자 명단 추출
         List<Long> participants = participantRepository.findAllBySession_SessionId(session.getSessionId())
                 .stream()
-                .map(p -> p.getHospital().getHospitalId())
+                .map(p -> p.getUser().getUserId())
                 .toList();
 
         // 2. 요청 객체 생성 (라운드 수는 세션 설정값 혹은 기본값 사용)

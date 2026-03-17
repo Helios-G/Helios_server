@@ -16,4 +16,15 @@ public class WorkCode {
 
     @Column(length = 45, nullable = false)
     private String workCodeName;
+
+    public enum Type {
+        BEFORE_TRAINING(0),
+        TRAINING(1),
+        DEPLOYING(2),
+        TRAINING_FAILED(3);
+
+        private final int id;
+        Type(int id) { this.id = id; }
+        public int getId() { return id; }
+    }
 }

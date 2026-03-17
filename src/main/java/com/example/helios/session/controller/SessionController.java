@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.helios.session.entity.Session;
-import com.example.helios.session.dto.LabelingStartRequest;
-import com.example.helios.session.dto.LabelingStartResponse;
 import com.example.helios.session.dto.SessionCreateRequest;
 import com.example.helios.session.dto.SessionCreateResponse;
 import com.example.helios.session.dto.SessionJoinRequest;
 import com.example.helios.session.dto.SessionJoinResponse;
 import com.example.helios.session.dto.SessionListResponse;
-import com.example.helios.session.service.LabelService;
 import com.example.helios.session.service.SessionService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 public class SessionController {
 
     private final SessionService sessionService;
-    private final LabelService labelService;
 
     // 세션 생성
     @PostMapping("/create")
@@ -58,21 +54,12 @@ public class SessionController {
     // 내가 참여 중인 세션
     @GetMapping("/my")
     public ResponseEntity<List<SessionListResponse>> getMySessions(
-            @RequestParam Integer hospitalId) {
+            org.springframework.security.core.Authentication authentication) {
 
-        return ResponseEntity.ok(sessionService.getMySessions(hospitalId));
+        Integer userId = Integer.parseInt(authentication.getName());
+
+        return ResponseEntity.ok(sessionService.getMySessions(userId));
     }
-
-    // 라벨링 시작
-    @PostMapping("/{sessionId}/label/start")
-    public ResponseEntity<LabelingStartResponse> startLabeling(
-            @PathVariable Integer sessionId,
-            @RequestBody LabelingStartRequest request
-    ) {
-        return ResponseEntity.ok(
-                labelService.startLabeling(sessionId, request)
-        );
-    }    
 
     // 세션 참여 대기 신청
     @PostMapping("/{sessionId}/join") 
