@@ -18,7 +18,8 @@ public class SessionListResponse {
 
     public static SessionListResponse from(
         Session session,
-        int currentParticipants
+        int currentParticipants,
+        boolean joined          // 추가
     ) {
         int maxParticipants =
                 session.getMaxParticipants() != null
@@ -31,15 +32,14 @@ public class SessionListResponse {
             mapStatus(session.getStatus()),
             currentParticipants,
             maxParticipants,
-            true
+            joined              // 하드코딩 제거
         );
     }
 
-    // 상태값 변환
     private static String mapStatus(Integer status) {
         return switch (status) {
-            case 0 -> "OPEN";
-            case 1 -> "READY";
+            case 0 -> "WAITING";
+            case 1 -> "IN_PROGRESS";
             case 2 -> "CLOSED";
             default -> "UNKNOWN";
         };

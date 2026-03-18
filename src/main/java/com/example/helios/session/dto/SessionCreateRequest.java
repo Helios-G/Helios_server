@@ -7,15 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class SessionCreateRequest {
 
     private String title;
     private String description;
-    private Integer memberCount;
+    private Integer maxParticipants;
     private String dataFormat;
-    private Integer classAmount;
-    private List<String> classList;
-    private String createdBy;
+    private Integer labelClassCount;
+    private List<String> labelClassList;
+    private Long createdBy;
 }
