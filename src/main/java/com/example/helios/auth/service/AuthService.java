@@ -22,9 +22,7 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder; // 중복 제거됨
     private final JwtTokenProvider jwtTokenProvider;
 
-    /**
-     * 회원가입
-     */
+    // 회원가입
     @Transactional
     public void signup(SignupRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {

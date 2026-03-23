@@ -36,9 +36,6 @@ public class User {
     private Long userId;
 
     // ===== FK =====
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<SessionParticipant> userSessions = new ArrayList<>();

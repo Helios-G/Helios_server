@@ -32,15 +32,17 @@ public class SessionListResponse {
             mapStatus(session.getStatus()),
             currentParticipants,
             maxParticipants,
-            joined              // 하드코딩 제거
+            joined              
         );
     }
 
     private static String mapStatus(Integer status) {
+        if (status == null) return "UNKNOWN";
         return switch (status) {
             case 0 -> "WAITING";
             case 1 -> "IN_PROGRESS";
-            case 2 -> "CLOSED";
+            case 2 -> "COMPLETED";
+            case 3 -> "FAILED";
             default -> "UNKNOWN";
         };
     }
