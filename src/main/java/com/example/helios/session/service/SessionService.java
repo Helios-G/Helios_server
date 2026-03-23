@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.helios.learning.service.LearningService;
 import com.example.helios.session.dto.SessionCreateRequest;
+import com.example.helios.session.dto.SessionDetailResponse;
 import com.example.helios.session.dto.SessionJoinResponse;
 import com.example.helios.session.dto.SessionListResponse;
 import com.example.helios.session.entity.Session;
@@ -15,6 +16,7 @@ import com.example.helios.session.repository.SessionParticipantRepository;
 import com.example.helios.session.repository.SessionRepository;
 import com.example.helios.user.entity.User;
 import com.example.helios.user.repository.UserRepository;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,18 +34,14 @@ public class SessionService {
         Session session = new Session();
         session.setTitle(request.getTitle());
         session.setDescription(request.getDescription());
-        
-        // DTO: maxParticipants (Integer) -> Entity: maxParticipants (Integer)
         session.setMaxParticipants(
             request.getMaxParticipants() != null ? request.getMaxParticipants() : 5
         );
-        
         session.setDataFormat(request.getDataFormat());
         session.setLabelClassCount(request.getLabelClassCount());
-
-        if (request.getCreatedBy() != null) {
-            session.setCreatedBy(String.valueOf(request.getCreatedBy()));
-        }
+        session.setStatus(0); // WAITING
+        session.setParticipantCount(0);
+        session.setCreatedBy(request.getCreatedBy());
 
         if (request.getLabelClassList() != null) {
             session.setLabelClassList(
@@ -51,8 +49,18 @@ public class SessionService {
             );
         }
 
-        session.setStatus(0); // 0: WAITING
-        return sessionRepository.save(session);
+        Session savedSession = sessionRepository.save(session);
+
+        // 생성자를 자동으로 참여자로 등록
+        if (request.getCreatedBy() != null) {
+            User user = userRepository.findById(request.getCreatedBy())
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+            participantRepository.save(new SessionParticipant(user, savedSession));
+            savedSession.setParticipantCount(1); // 참여자 수 1로 업데이트
+            sessionRepository.save(savedSession);
+        }
+
+        return savedSession;
     }
 
     // 2. 전체/상태별 세션 목록 (joined 여부 추가)
@@ -92,7 +100,14 @@ public class SessionService {
             .collect(Collectors.toList());
     }
 
-    // 4. 세션 참여 신청 및 자동 학습 트리거
+    // 4. 세션 상세 조회
+    public SessionDetailResponse getSession(Long sessionId) {
+    Session session = sessionRepository.findById(sessionId)
+        .orElseThrow(() -> new IllegalArgumentException("세션이 존재하지 않습니다."));
+    return SessionDetailResponse.from(session);
+    }
+
+    // 5. 세션 참여 신청 및 자동 학습 트리거
     @Transactional
     public SessionJoinResponse joinSession(Long sessionId, Long userId) {
         // 1. 세션 존재 검증
@@ -117,6 +132,8 @@ public class SessionService {
         // 5. 참여 정보 저장
         participantRepository.save(new SessionParticipant(user, session));
         int updatedCount = currentCount + 1;
+        session.setParticipantCount(updatedCount);
+        sessionRepository.save(session);
 
         // 6. 상태 업데이트 및 학습 트리거
         String responseStatus = "WAITING"; // 기본 상태

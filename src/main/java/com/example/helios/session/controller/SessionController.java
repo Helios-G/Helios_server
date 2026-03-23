@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.helios.session.entity.Session;
 import com.example.helios.session.dto.SessionCreateRequest;
 import com.example.helios.session.dto.SessionCreateResponse;
+import com.example.helios.session.dto.SessionDetailResponse;
 import com.example.helios.session.dto.SessionJoinResponse;
 import com.example.helios.session.dto.SessionListResponse;
 import com.example.helios.session.service.SessionService;
@@ -23,12 +24,12 @@ public class SessionController {
     private final SessionService sessionService;
 
     // 1. 세션 생성
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<SessionCreateResponse> createSession(
             @RequestBody SessionCreateRequest request) {
 
         Session session = sessionService.createSession(request);
-        return ResponseEntity.ok(new SessionCreateResponse(session.getSessionId(), "OPEN"));
+        return ResponseEntity.ok(new SessionCreateResponse(session.getSessionId(), "WAITING"));
     }
 
     // 2. 세션 목록 (전체 / 상태별)
@@ -47,6 +48,7 @@ public class SessionController {
         return ResponseEntity.ok(sessionService.getSessions(status, userId));
     }
 
+    /*
     // 3. 내가 참여 중인 세션 (토큰 기반)
     @GetMapping("/my")
     public ResponseEntity<List<SessionListResponse>> getMySessions(
@@ -56,8 +58,25 @@ public class SessionController {
         Long userId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.ok(sessionService.getMySessions(userId));
     }
+        */
 
-    // 4. 세션 참여 대기 신청 (Request Body 제거 버전)
+    //내가 참여중인 세션 조회테스트용
+    @GetMapping("/my")
+    public ResponseEntity<List<SessionListResponse>> getMySessions(
+            @RequestParam Long userId) {
+        
+        return ResponseEntity.ok(sessionService.getMySessions(userId));
+    }
+
+    //4. 세션 상세 조회
+    @GetMapping("/{sessionId}")
+    public ResponseEntity<SessionDetailResponse> getSession(
+            @PathVariable Long sessionId) {
+        return ResponseEntity.ok(sessionService.getSession(sessionId));
+    }
+
+    /*
+    // 5. 세션 참여 대기 신청
     @PostMapping("/{sessionId}/join") 
     public ResponseEntity<SessionJoinResponse> joinSession(
         @PathVariable(name = "sessionId") Long sessionId,
@@ -67,4 +86,15 @@ public class SessionController {
         Long userId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.ok(sessionService.joinSession(sessionId, userId));
     }
+        */
+
+
+    // 임시 테스트용 토큰 제거버전
+    @PostMapping("/{sessionId}/join")
+    public ResponseEntity<SessionJoinResponse> joinSession(
+        @PathVariable(name = "sessionId") Long sessionId,
+        @RequestParam Long userId
+    ) {
+        return ResponseEntity.ok(sessionService.joinSession(sessionId, userId));
+    }   
 }

@@ -25,6 +25,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Session {
 
+    public enum SessionStatus {
+        WAITING,      // 대기 중 (0)
+        IN_PROGRESS,  // 학습 중 (1)
+        COMPLETED,    // 학습 완료 (2)
+        FAILED        // 학습 실패 (3)
+    }
+
+    public enum DataFormat {
+        XRAY, MRI, CT, PATHOLOGY
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "session_id")
@@ -59,7 +70,7 @@ public class Session {
     private Integer status;
 
     @Column(name = "created_by", length = 45)
-    private String createdBy;
+    private Long createdBy;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

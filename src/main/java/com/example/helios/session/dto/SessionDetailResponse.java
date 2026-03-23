@@ -12,11 +12,11 @@ public class SessionDetailResponse {
     private String title;
     private String description;
     private String status;
-    private Integer participantCount;
-    private Integer maxParticipants;
+    private int participantCount;
+    private int maxParticipants;
     private String dataFormat;
     private String labelClassList;
-    private Integer labelClassCount;
+    private int labelClassCount;
     private LocalDateTime createdAt;
     private LocalDateTime sessionEndAt;
 
@@ -26,21 +26,23 @@ public class SessionDetailResponse {
             session.getTitle(),
             session.getDescription(),
             mapStatus(session.getStatus()),
-            session.getParticipantCount(),
-            session.getMaxParticipants(),
+            session.getParticipantCount() != null ? session.getParticipantCount() : 0,
+            session.getMaxParticipants() != null ? session.getMaxParticipants() : 0,
             session.getDataFormat(),
             session.getLabelClassList(),
-            session.getLabelClassCount(),
+            session.getLabelClassCount() != null ? session.getLabelClassCount() : 0,
             session.getCreatedAt(),
             session.getSessionEndAt()
         );
     }
 
     private static String mapStatus(Integer status) {
+        if (status == null) return "UNKNOWN";
         return switch (status) {
             case 0 -> "WAITING";
             case 1 -> "IN_PROGRESS";
-            case 2 -> "CLOSED";
+            case 2 -> "COMPLETED";
+            case 3 -> "FAILED";
             default -> "UNKNOWN";
         };
     }
