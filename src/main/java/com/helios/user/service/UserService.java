@@ -2,6 +2,7 @@ package com.helios.user.service;
 
 import com.helios.user.dto.UserResponse;
 import com.helios.user.entity.User;
+import com.helios.user.exception.UserNotFoundException;
 import com.helios.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,30 +17,24 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    // 1. 정보 조회
+    // 회원 정보 조회
     public UserResponse getMyInfo(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("해당 이메일의 사용자를 찾을 수 없습니다."));
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UserNotFoundException(email));
         return UserResponse.from(user);
     }
 
-    // 2. 비밀번호 수정
-    @Transactional
+    // 비밀번호 수정
     public void updatePassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        
-        // 새 비밀번호 암호화 후 저장
+                .orElseThrow(() -> new UserNotFoundException(email));
         user.setPassword(passwordEncoder.encode(newPassword));
     }
 
-    // 3. 회원 탈퇴 (논리 삭제: status를 9로 변경)
-    @Transactional
+    // 회원 탈퇴 (soft delete)
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        
-        // 실제 삭제 대신 status를 9(삭제)로 변경하는 방식 추천
+                .orElseThrow(() -> new UserNotFoundException(email));
         user.setStatus(9);
     }
 }
