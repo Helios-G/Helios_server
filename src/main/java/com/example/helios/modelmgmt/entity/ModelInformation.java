@@ -1,14 +1,20 @@
 package com.example.helios.modelmgmt.entity;
 
-import com.example.helios.session.entity.Session; 
-import com.example.helios.user.entity.User;
-
 import java.time.LocalDateTime;
 
-import com.example.helios.modelmgmt.entity.ModelVersion;
-import com.example.helios.modelmgmt.entity.WorkCode;
+import com.example.helios.session.entity.Session;
+import com.example.helios.user.entity.User;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +30,9 @@ public class ModelInformation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "model_information_id")
     private Long modelInformationId;
+
+    @Column(name = "file_name", length = 100)
+    private String fileName;  // "20260331-Round5-v1.zip"
 
     // === FK 연관 관계 ===
 
