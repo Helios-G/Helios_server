@@ -1,4 +1,3 @@
-// dto/UploadUrlResponseDto.java
 package com.helios.modelmgmt.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class UploadUrlResponseDto {
+public class UploadUrlResponse {
     private String presignedUrl;
     private Long modelId;
 
