@@ -6,6 +6,9 @@ import com.helios.auth.dto.TokenResponse;
 import com.helios.auth.jwt.JwtTokenProvider;
 import com.helios.user.entity.RoleCode;
 import com.helios.user.entity.User;
+import com.helios.user.exception.EmailAlreadyExistsException;
+import com.helios.user.exception.InvalidPasswordException;
+import com.helios.user.exception.UserNotFoundException;
 import com.helios.user.repository.RoleCodeRepository;
 import com.helios.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +28,9 @@ public class AuthService {
     // 회원가입
     @Transactional
     public void signup(SignupRequest request) {
+        // 이미 존재하는 이메일 예외처리
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("이미 존재하는 이메일입니다.");
+            throw new EmailAlreadyExistsException();
         }
 
         RoleCode userRole = roleCodeRepository.findByUserRoleCodeName("ROLE_USER")
@@ -46,21 +50,19 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    /**
-     * 로그인
-     */
+    // 로그인
     @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest request) {
         // 1. 이메일로 사용자 조회
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("가입되지 않은 이메일입니다."));
+            .orElseThrow(() -> new UserNotFoundException(request.getEmail()));
 
         // 2. 비밀번호 일치 여부 확인
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException();
         }
 
-        // 3. 권한 정보 추출 (User 엔티티에 RoleCode가 연관되어 있어야 함)
+        // 3. 권한 정보 추출
         String role = user.getRoleCode() != null ? user.getRoleCode().getUserRoleCodeName() : "ROLE_USER";
 
         // 4. JWT 토큰 생성
