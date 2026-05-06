@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.helios.modelmgmt.dto.DownloadUrlResponseDto;
-import com.helios.modelmgmt.dto.UploadUrlRequestDto;
-import com.helios.modelmgmt.dto.UploadUrlResponseDto;
+import com.helios.modelmgmt.dto.DownloadUrlResponse;
+import com.helios.modelmgmt.dto.UploadUrlRequest;
+import com.helios.modelmgmt.dto.UploadUrlResponse;
 import com.helios.modelmgmt.entity.ModelInformation;
 import com.helios.modelmgmt.exception.ModelNotFoundException;
 import com.helios.modelmgmt.repository.ModelInformationRepository;
@@ -24,7 +24,7 @@ public class ModelService {
     private static final int DOWNLOAD_EXPIRY_MINUTES = 10;
 
     // POST /models/upload-url
-    public UploadUrlResponseDto generateUploadUrl(UploadUrlRequestDto request) {
+    public UploadUrlResponse generateUploadUrl(UploadUrlRequest request) {
         String s3Key = request.getFileName();
         LocalDateTime expiration = LocalDateTime.now().plusMinutes(UPLOAD_EXPIRY_MINUTES);
 
@@ -40,19 +40,20 @@ public class ModelService {
         model.setFileName(s3Key);
         modelInformationRepository.save(model);
 
-        return new UploadUrlResponseDto(presignedUrl, model.getModelInformationId(), expiration);
+        return new UploadUrlResponse(presignedUrl, model.getModelInformationId(), expiration);
     }
 
     // GET /models/{modelId}/download
-    public DownloadUrlResponseDto generateDownloadUrl(Long modelId) {
+    public DownloadUrlResponse generateDownloadUrl(Long modelId) {
         ModelInformation model = modelInformationRepository.findById(modelId)
                 .orElseThrow(() -> new ModelNotFoundException(modelId));
 
         String fileName = model.getFileName();
         String version = model.getModelVersion().getVersion();
+        LocalDateTime expiration = LocalDateTime.now().plusMinutes(DOWNLOAD_EXPIRY_MINUTES);
 
         String downloadUrl = s3Service.generateDownloadPresignedUrl(fileName, DOWNLOAD_EXPIRY_MINUTES);
 
-        return new DownloadUrlResponseDto(modelId, version, fileName, downloadUrl, DOWNLOAD_EXPIRY_MINUTES);
+        return new DownloadUrlResponse(modelId, version, downloadUrl, expiration);
     }
 }

@@ -1,8 +1,5 @@
 package com.helios.auth.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +10,9 @@ import com.helios.auth.dto.LoginRequest;
 import com.helios.auth.dto.SignupRequest;
 import com.helios.auth.dto.TokenResponse;
 import com.helios.auth.service.AuthService;
+import com.helios.common.response.ApiResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,18 +23,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, Object>> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequest request) {
         authService.signup(request);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", 200);
-        response.put("message", "회원 가입이 완료되었습니다");
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.of("회원 가입이 완료되었습니다."));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<ApiResponse<TokenResponse>> login(@RequestBody @Valid LoginRequest request) {
+        TokenResponse token = authService.login(request);
+        return ResponseEntity.ok(ApiResponse.of("로그인이 완료되었습니다.", token));
     }
 }
