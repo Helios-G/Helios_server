@@ -8,12 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "tb_user_role_code")
 @Getter
-@Setter
 @NoArgsConstructor
 public class RoleCode {
 
@@ -28,22 +26,4 @@ public class RoleCode {
     public RoleCode(String userRoleCodeName) {
         this.userRoleCodeName = userRoleCodeName;
     }
-
-    public enum Type {
-    ROLE_USER(1),
-    ROLE_PENDING(2),
-    ROLE_PARTICIPANT(3);
-
-    private final int id;
-    Type(int id) { this.id = id; }
-    public int getId() { return id; }
-
-    // ID값으로 Enum 상수를 찾는 정적 메서드
-    public static Type fromId(int id) {
-        for (Type type : values()) {
-            if (type.id == id) return type;
-        }
-        return ROLE_USER; // 기본값
-    }
-}
 }

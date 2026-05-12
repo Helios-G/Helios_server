@@ -9,7 +9,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.helios.auth.jwt.JwtAuthenticationEntryPoint;
 import com.helios.auth.jwt.JwtAuthenticationFilter;
 import com.helios.auth.jwt.JwtTokenProvider;
 
@@ -21,11 +25,18 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     // 비밀번호 암호화
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // JWT 필터 Bean 등록
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtTokenProvider);
     }
 
     @Bean
@@ -48,16 +59,24 @@ public class SecurityConfig {
 
             // 요청 권한 설정
             .authorizeHttpRequests(auth -> auth
-
                 // Preflight 요청 허용 (CORS 핵심)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // 권한 체크 비활성화 - 추후 .authenticated()로 변경 예정
-                .anyRequest().permitAll()
+                
+                // 인증 없이 접근 가능
+                .requestMatchers("/auth/login", "/auth/signup").permitAll()
+                
+                // 나머지는 토큰 필요
+                .anyRequest().authenticated()
+            )
+
+            // 인증 실패 시 처리 (401 응답 커스터마이징)
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             )
 
             // JWT 필터 등록
             .addFilterBefore(
-                    new JwtAuthenticationFilter(jwtTokenProvider),
+                    jwtAuthenticationFilter(),
                     UsernamePasswordAuthenticationFilter.class
             );
 
@@ -66,10 +85,9 @@ public class SecurityConfig {
 
     // CORS 설정
     @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
 
-        org.springframework.web.cors.CorsConfiguration config =
-                new org.springframework.web.cors.CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
 
         config.addAllowedOriginPattern("*");
 
@@ -82,8 +100,7 @@ public class SecurityConfig {
         // 인증정보 허용
         config.setAllowCredentials(true);
 
-        org.springframework.web.cors.UrlBasedCorsConfigurationSource source =
-                new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration("/**", config);
 

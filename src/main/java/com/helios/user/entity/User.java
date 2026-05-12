@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.helios.admin.entity.Admin;
 import com.helios.session.entity.SessionParticipant;
 
 import jakarta.persistence.Column;
@@ -26,7 +25,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "users")
 @Getter 
-@Setter 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
@@ -40,6 +38,7 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<SessionParticipant> userSessions = new ArrayList<>();
 
+    @Setter //rolecode만 setter 허용
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_role_code_id")
     private RoleCode roleCode; 
@@ -86,5 +85,14 @@ public class User {
         this.password = password;
         this.businessNum = null; // 명시적으로 null 처리
         this.status = 1;
+    }
+
+    // 변경 메서드로 제어
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void withdraw() {
+        this.status = 9;
     }
 }
