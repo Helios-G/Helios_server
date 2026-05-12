@@ -22,7 +22,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final RoleCodeRepository roleCodeRepository;
-    private final BCryptPasswordEncoder passwordEncoder; // 중복 제거됨
+    private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입
@@ -66,7 +66,9 @@ public class AuthService {
         String role = user.getRoleCode() != null ? user.getRoleCode().getUserRoleCodeName() : "ROLE_USER";
 
         // 4. JWT 토큰 생성
-        String accessToken = jwtTokenProvider.createToken(user.getEmail(), role);
+        String accessToken = jwtTokenProvider.createToken(
+            user.getUserId(), user.getEmail(), role 
+        );
 
         return TokenResponse.builder()
                 .grantType("Bearer")

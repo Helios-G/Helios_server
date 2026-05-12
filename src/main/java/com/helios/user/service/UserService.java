@@ -25,16 +25,18 @@ public class UserService {
     }
 
     // 비밀번호 수정
+    @Transactional
     public void updatePassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.changePassword(passwordEncoder.encode(newPassword));
     }
 
     // 회원 탈퇴 (soft delete)
+    @Transactional
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
-        user.setStatus(9);
+        user.withdraw();
     }
 }

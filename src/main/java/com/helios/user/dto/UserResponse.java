@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserResponse {
+    private Long id;
     private String name;
     private String email;
     private Integer roleId;
@@ -14,6 +15,7 @@ public class UserResponse {
 
     public static UserResponse from(User user) {
         return new UserResponse(
+            user.getUserId(),
             user.getName(),
             user.getEmail(),
             user.getRoleCode().getUserRoleCodeId(),
